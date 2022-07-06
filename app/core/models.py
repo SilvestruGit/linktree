@@ -11,19 +11,25 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
         """Create save and return a new user."""
-        if email is None or len(email) <= 7:
+        if email is None or len(email) <= 0:
             raise(ValueError("The email is not valid."))
-        user = self.model(email=self._normalize_email(email), **extra_fields)
+        user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save()
 
         return user
 
-    def _normalize_email(self, email):
-        """Returns normalized emails."""
-        email = email.split('@')
-        email = email[0] + '@' + email[1].lower()
-        return email
+    def create_superuser(self, email, password=None, **extra_fields):
+        """Create save and return a new superuser."""
+        if email is None or len(email) <= 0:
+            raise (ValueError("Email is not valid."))
+        user = self.model(email=self.normalize_email(email), **extra_fields)
+        user.set_password(password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+
+        return user
 
 
 class User(AbstractBaseUser, PermissionsMixin):
