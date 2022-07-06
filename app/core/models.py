@@ -11,6 +11,8 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
         """Create save and return a new user."""
+        if email is None or len(email) <= 7:
+            raise(ValueError("The email is not valid."))
         user = self.model(email=self._normalize_email(email), **extra_fields)
         user.set_password(password)
         user.save()
