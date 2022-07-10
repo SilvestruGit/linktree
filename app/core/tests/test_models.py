@@ -1,14 +1,14 @@
 """
-Tests for the custom user model.
+Tests for models.
 """
 
+from django.test import TestCase
+from core import models
 from django.contrib.auth import get_user_model
 
-from django.test import TestCase
 
-
-class UserTests(TestCase):
-    """Tests for the custom user model."""
+class ModelsTests(TestCase):
+    """Tests for models."""
 
     def test_create_user(self):
         """Test creating a user is succesful."""
@@ -52,3 +52,16 @@ class UserTests(TestCase):
 
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_staff)
+
+    def test_create_linktree(self):
+        """Test creating a linktree model."""
+        user = get_user_model().objects.create_user(
+            email='test@example.com',
+            password='parola1234',
+        )
+        linktree = models.LinkTree.objects.create(
+            user=user,
+            title='My linktree',
+        )
+
+        self.assertEqual(str(linktree), linktree.title)
