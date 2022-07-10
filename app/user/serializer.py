@@ -7,7 +7,7 @@ from django.contrib.auth import (
     authenticate,
 )
 from rest_framework import serializers
-from django.translate import gettext as _
+from django.utils.translation import gettext as _
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,6 +17,17 @@ class UserSerializer(serializers.ModelSerializer):
         model = get_user_model()
         fields = ['email', 'username', 'password']
         extra_kwargs = {'password': {'write_only': True, 'min_length': 5}}
+
+    def update(self, instance, validated_data):
+        """Update and return user."""
+        password = validated_data.pop('password', None)
+        user = super().update(instance, validated_data)
+
+        if password:
+            user.set_password(password)
+            user.save()
+
+        return user
 
     def create(self, validated_data):
         return get_user_model().objects.create_user(**validated_data)
