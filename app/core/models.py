@@ -59,6 +59,10 @@ class LinkTree(models.Model):
         on_delete=models.CASCADE,
     )
     title = models.CharField(max_length=100)
+    link = models.URLField(
+        max_length=255,
+        default='https://www.betburger.com/',
+    )
 
     def __str__(self):
         return self.title
